@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec babel-node index.js",
-    "build": "nodemon --exec babel-node index.js"
+    "build-babel": "babel -d ./build ./index.js -s",
+    "build": "npm run build-babel"
   },
   "author": "Falc0n",
   "license": "MIT",
