@@ -26,6 +26,7 @@
       <% }) %>
     </select>
     <input
+      id="datePickerId"
       name="Date"
       class="bg-transparent uppercase font-bold text-sm p-4 mr-4"
       type="date"
@@ -51,3 +52,7 @@
     </a>
 </button>
 </div>
+
+<script>
+  datePickerId.min = new Date().toISOString().split("T")[0];
+</script>

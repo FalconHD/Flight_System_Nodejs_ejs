@@ -127,7 +127,7 @@
           >Capacity*</label
         >
         <input type="number" value="<%= data.flight ? data.flight.capacity :
-        ""%>" name="capacity" class="w-full bg-gray-50 text-gray-800 border
+        ""%>" name="capacity" class="cp w-full bg-gray-50 text-gray-800 border
         focus:ring ring-indigo-300 rounded outline-none transition duration-100
         px-3 py-2" />
       </div>
@@ -138,7 +138,7 @@
           >Available*</label
         >
         <input type="number" value="<%= data.flight ? data.flight.available :
-        ""%>" name="available" class="w-full bg-gray-50 text-gray-800 border
+        ""%>" name="available" class="cp w-full bg-gray-50 text-gray-800 border
         focus:ring ring-indigo-300 rounded outline-none transition duration-100
         px-3 py-2" />
       </div>
@@ -165,5 +165,15 @@
   </div>
 </div>
 
-<!-- footer - start -->
+<script>
+  document.querySelectorAll('.cp').forEach((input) => {
+    input.addEventListener('change', (e) => {
+      console.log(input.value);
+      if (input.value > 20) {
+        input.value = 20;
+      }
+    });
+  });
+</script>
+
 <%- include('./src/views/particial/footer.ejs') %>
