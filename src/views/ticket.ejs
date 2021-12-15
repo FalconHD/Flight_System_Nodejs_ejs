@@ -1,0 +1,96 @@
+<%- include('./src/views/particial/header.ejs',{page:"Ticket"}) %>
+
+<link rel="stylesheet" href="/style.css" />
+
+<div id="tm">
+  <div class="main-content">
+    <div class="ticket">
+      <div class="ticket__main">
+        <div class="header">SAFI AIRLINE</div>
+        <div class="info passenger">
+          <div class="info__item">Passenger</div>
+          <div class="info__detail">
+            <%= data.user.nom %> <%= data.user.prenom %>
+          </div>
+        </div>
+        <div class="info platform">
+          <span>Depart </span><span class="mb-14">from </span>
+          <span><%= data.flight.airline %> </span>
+        </div>
+        <div class="info departure">
+          <div class="info__item">Depart</div>
+          <div class="info__detail"><%= data.flight.origin.name %></div>
+        </div>
+        <div class="info arrival">
+          <div class="info__item">Arrive</div>
+          <div class="info__detail"><%= data.flight.destination.name %></div>
+        </div>
+        <div class="info date">
+          <div class="info__item">Date</div>
+          <div class="info__detail"><%= data.flight.date %></div>
+        </div>
+        <div class="info time">
+          <div class="info__item">Starting</div>
+          <div class="info__detail"><%= data.flight.startingTime %></div>
+        </div>
+        <div class="info time">
+          <div class="info__item">Ending</div>
+          <div class="info__detail"><%= data.flight.endingTime %></div>
+        </div>
+        <div class="info passenger">
+          <div class="info__item">Extra</div>
+          <div class="info__detail">
+            <%= data.hotel ? "Hotel" : "" %> <%= data.restauration ?
+            "Restauration" : "" %> <%= data.transport ? "Transport" : "" %>
+          </div>
+        </div>
+
+        <div class="info seat">
+          <div class="info__item">Invites</div>
+          <div class="info__detail"><%= data.numberOfPassengers %></div>
+        </div>
+      </div>
+      <div>
+        <div class="header h-full flex flex-col justify-around items-center">
+          <img src="/logo.png" alt="" class="p-3" />
+          <span class="flex flex-col">
+            <%= data.finalPrice %>
+            <h1>MAD</h1>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+  <button
+    id="down"
+    style="background-color: #790707"
+    class="block w-full max-w-xs mx-auto hover:bg-indigo-700 focus:bg-indigo-700 text-white rounded-lg px-3 py-3 font-semibold flex items-center justify-center gap-5 mt-20"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="feather feather-download-cloud"
+    >
+      <polyline points="8 17 12 21 16 17"></polyline>
+      <line x1="12" y1="12" x2="12" y2="21"></line>
+      <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"></path>
+    </svg>
+    DOWNLOAD YOU TICKET
+  </button>
+</div>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"
+  integrity="sha512-YcsIPGdhPK4P/uRW6/sruonlYj+Q7UHWeKfTAkBW+g83NKM+jMJFJ4iAPfSnVp7BKD4dKMHmVSvICUbE/V1sSw=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<script src="/script.js"></script>

@@ -1,0 +1,31 @@
+{
+  "name": "volbro",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --exec babel-node index.js",
+    "build": "nodemon --exec babel-node index.js"
+  },
+  "author": "Falc0n",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/node": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "@types/node": "^16.11.12",
+    "bcrypt": "^5.0.1",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "mysql": "mysqljs/mysql",
+    "nodemon": "^2.0.15",
+    "prettier": "^2.5.0",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.41"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.16.4",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-decorators-legacy": "^1.3.5"
+  }
+}

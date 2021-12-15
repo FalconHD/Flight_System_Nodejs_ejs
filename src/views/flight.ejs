@@ -1,0 +1,169 @@
+<%- include('./src/views/particial/header.ejs',{page:"Flight"}) %>
+
+<div class="py-6 sm:py-8 lg:py-12">
+  <div class="max-w-screen-2xl px-4 md:px-8 mx-auto">
+    <!-- text - start -->
+    <div class="mb-5 md:mb-10">
+      <p class="max-w-screen-md text-gray-100 md:text-lg text-center mx-auto">
+        <% if(data.flight){ %> UPDATING FLIGHT <%= data.flight.id %> <br />
+        <% } else {%> ADDING NEW FLIGHT <br />
+        <% } %>
+      </p>
+    </div>
+    <!-- text - end -->
+
+    <!-- form - start -->
+    <form
+      method="post"
+      action="<%= data.flight ? '/updateflight/'+data.flight.id : '/addflight' %>"
+      class="max-w-screen-md grid sm:grid-cols-2 gap-4 mx-auto"
+    >
+      <div>
+        <label
+          for="origin"
+          class="inline-block text-gray-800 text-sm sm:text-base mb-2"
+          >From*</label
+        >
+        <select
+          name="origin"
+          class="w-full bg-gray-50 text-gray-800 border focus:ring ring-indigo-300 rounded outline-none transition duration-100 px-3 py-2"
+        >
+          <% data.cities.forEach((city)=>{%> <% if(data.flight &&
+          data.flight.origin.id == city.id){ %>
+          <option value="<%= city.id %>" selected><%= city.name %></option>
+          <% } else { %>
+          <option value="<%= city.id %>"><%= city.name %></option>
+          <% } %> <% }) %>
+        </select>
+      </div>
+      <div>
+        <label
+          for="destination"
+          class="inline-block text-gray-800 text-sm sm:text-base mb-2"
+          >To*</label
+        >
+        <select
+          name="destination"
+          class="w-full bg-gray-50 text-gray-800 border focus:ring ring-indigo-300 rounded outline-none transition duration-100 px-3 py-2"
+        >
+          <% data.cities.forEach((city)=>{%> <% if(data.flight &&
+          data.flight.destination.id == city.id){ %>
+          <option value="<%= city.id %>" selected><%= city.name %></option>
+          <% } else { %>
+          <option value="<%= city.id %>"><%= city.name %></option>
+          <% } %> <% }) %>
+        </select>
+      </div>
+
+      <div>
+        <label
+          for="startingTime"
+          class="inline-block text-gray-800 text-sm sm:text-base mb-2"
+          >Starting Time*</label
+        >
+        <input value="<%= data.flight ? data.flight.startingTime : ""%>"
+        name="startingTime" type="time" class="w-full bg-gray-50 text-gray-800
+        border focus:ring ring-indigo-300 rounded outline-none transition
+        duration-100 px-3 py-2" />
+      </div>
+      <div>
+        <label
+          for="endingTime"
+          class="inline-block text-gray-800 text-sm sm:text-base mb-2"
+          >Ending Time*</label
+        >
+        <input value="<%= data.flight ? data.flight.endingTime : ""%>"
+        name="endingTime" type="time" class="w-full bg-gray-50 text-gray-800
+        border focus:ring ring-indigo-300 rounded outline-none transition
+        duration-100 px-3 py-2" />
+      </div>
+
+      <div class="sm:col-span-2">
+        <label
+          for="Date"
+          class="inline-block text-gray-800 text-sm sm:text-base mb-2"
+          >Date</label
+        >
+        <input value="<%= data.flight ? data.flight.date : ""%>" name="date"
+        type="date" class="w-full bg-gray-50 text-gray-800 border focus:ring
+        ring-indigo-300 rounded outline-none transition duration-100 px-3 py-2"
+        />
+      </div>
+
+      <div class="sm:col-span-2">
+        <label
+          for="airline"
+          class="inline-block text-gray-800 text-sm sm:text-base mb-2"
+          >Airline*</label
+        >
+        <select
+          name="airline"
+          class="w-full bg-gray-50 text-gray-800 border focus:ring ring-indigo-300 rounded outline-none transition duration-100 px-3 py-2"
+        >
+          <% data.airlines.forEach((airline)=>{%> <% if(data.flight && airline
+          == data.flight.airline){ %>
+          <option value="<%= airline %>" selected><%= airline %></option>
+          <% } else { %>
+          <option value="<%= airline %>"><%= airline %></option>
+          <% } %> <% }) %>
+        </select>
+      </div>
+      <div class="sm:col-span-2">
+        <label
+          for="price"
+          class="inline-block text-gray-800 text-sm sm:text-base mb-2"
+          >Price*</label
+        >
+        <input type="number" value="<%= data.flight ? data.flight.price : ""%>"
+        name="price" class="w-full bg-gray-50 text-gray-800 border focus:ring
+        ring-indigo-300 rounded outline-none transition duration-100 px-3 py-2"
+        />
+      </div>
+
+      <div class="sm:col-span-2">
+        <label
+          for="capacity"
+          class="inline-block text-gray-800 text-sm sm:text-base mb-2"
+          >Capacity*</label
+        >
+        <input type="number" value="<%= data.flight ? data.flight.capacity :
+        ""%>" name="capacity" class="w-full bg-gray-50 text-gray-800 border
+        focus:ring ring-indigo-300 rounded outline-none transition duration-100
+        px-3 py-2" />
+      </div>
+      <div class="sm:col-span-2">
+        <label
+          for="available"
+          class="inline-block text-gray-800 text-sm sm:text-base mb-2"
+          >Available*</label
+        >
+        <input type="number" value="<%= data.flight ? data.flight.available :
+        ""%>" name="available" class="w-full bg-gray-50 text-gray-800 border
+        focus:ring ring-indigo-300 rounded outline-none transition duration-100
+        px-3 py-2" />
+      </div>
+
+      <div class="sm:col-span-2 flex justify-between items-center">
+        <% if(data.flight){ %>
+        <button
+          style="background-color: #790707"
+          class="inline-block bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 focus-visible:ring ring-indigo-300 text-white text-sm md:text-base font-semibold text-center rounded-lg outline-none transition duration-100 px-8 py-3 w-full"
+        >
+          UPDATE
+        </button>
+        <% } else { %>
+        <button
+          style="background-color: #790707"
+          class="inline-block bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 focus-visible:ring ring-indigo-300 text-white text-sm md:text-base font-semibold text-center rounded-lg outline-none transition duration-100 px-8 py-3 w-full"
+        >
+          CREATE
+        </button>
+        <% } %>
+      </div>
+    </form>
+    <!-- form - end -->
+  </div>
+</div>
+
+<!-- footer - start -->
+<%- include('./src/views/particial/footer.ejs') %>

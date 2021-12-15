@@ -1,0 +1,209 @@
+<%- include('./src/views/particial/header.ejs',{page:"Admin"}) %>
+
+<link rel="stylesheet" href="/style.css">
+
+<div class="min-h-screen flex ">
+  <div class="flex-grow py-12 px-10">
+  <div class="flex justify-between">
+    <div>
+      <h2 class="text-lg font-bold" style="color: #790707">Hi Andrei,</h2>
+    </div>
+    <div></div>
+  </div>
+  <div>
+    <div class="flex mt-10 justify-center w-full">
+        <table class="min-w-full table-auto w-full">
+          <thead class="justify-between">
+            <tr class="bg-indigo-600" style="background-color: #790707">
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider"
+              >
+                Airline
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider"
+              >
+                From
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider"
+              >
+                To
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider"
+              >
+                Date
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider"
+              >
+                Price
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider"
+              >
+                capacity
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider"
+              >
+                available
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-200 uppercase tracking-wider"
+              >
+                escale
+              </th>
+              <th scope="col" class="relative px-6 py-3">
+                <span class="sr-only">RESERVE</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-gray-200">
+            <% for( let i = 0; i < data.flights.length; i++ ) { %>
+            <tr class="bg-white border-4 border-gray-200 text-center">
+              <td class="px-6 py-4 whitespace-nowrap text-left">
+                <div class="flex items-center">
+                  <div
+                    class="h-10 w-10 rounded-full bg-purple-900 flex justify-center items-center text-white"
+                  >
+                    <%= data.flights[i].airline.slice(0,3).toUpperCase() %>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 whitespace-nowrap text-left">
+                <div class="ml-4">
+                  <div class="text-sm font-medium text-gray-900">
+                    <%= data.flights[i].origin.name.toUpperCase()%>
+                  </div>
+                  <div class="text-sm text-gray-500">
+                    <%= data.flights[i].startingTime %>
+                  </div>
+                </div>
+              </td>
+              <td class="py-4 whitespace-nowrap text-left">
+                <div class="ml-4">
+                  <div class="text-sm font-medium text-gray-900">
+                    <%= data.flights[i].destination.name.toUpperCase()%>
+                  </div>
+                  <div class="text-sm text-gray-500">
+                    <%= data.flights[i].endingTime %>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-left">
+                <div class="text-sm text-gray-900">
+                  <%= data.flights[i].date %>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-left">
+                <span
+                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+                >
+                  <%= data.flights[i].price %>
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-left">
+                <%= data.flights[i].capacity %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-left">
+                <span
+                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= data.flights[i].available > 0 ? 'bg-green-100' : 'bg-red-600 text-white-200' %>"
+                >
+                  <%= data.flights[i].available > 0 ? "True" : "False" %>
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-left">
+                <span
+                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= data.flights[i].escale.length >0 ? 'bg-green-100' : 'bg-red-600 text-white' %>"
+                >
+                  <%= data.flights[i].escale.length >0 ? "True" : "False" %>
+                </span>
+              </td> 
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <span onclick="modalState('<%= data.flights[i].id %>')"  class="inline-flex items-center px-2 py-2 rounded-lg text-red-800 bg-red-200 hover:bg-red-500 focus:outline-none focus:shadow-outline cursor-pointer ">
+                  <svg
+                    class="h-4 w-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </span>
+                <a href="/flight/<%= data.flights[i].id %>">
+                <span class=" inline-flex items-center px-2 py-2 rounded-lg text-yellow-800 bg-yellow-200 hover:bg-yellow-300 focus:outline-none focus:shadow-outline cursor-pointer">
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                      width="24" height="24" 
+                      viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" 
+                      stroke-linejoin="round" class="feather feather-edit h-4 w-4">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
+                    </path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z">
+                    </path>
+                  </svg>
+                </span>
+              </a>
+              </td> 
+            </tr>
+            <% } %>
+            </tr>
+          </tbody>
+        </table>
+        <a
+        href="/flight"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" 
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" 
+            stroke-linecap="round" stroke-linejoin="round" 
+            style="background-color: #790707 ;"
+            class="feather feather-plus-circle fixed bottom-5 right-8 p-0.5 text-gray-100 rounded-full cursor-pointer hover:text-white">
+            <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="16">
+              </line><line x1="8" y1="12" x2="16" y2="12">
+              </line>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div id="deleteModal" style="backdrop-filter: blur(10px);" class="card_panel modal-container hidden top-0 left-0 w-screen h-screen w-4/12 md:max-w-11/12 mx-auto rounded-xl z-50 fixed justify-center items-center">
+    <div class="modal-content py-4 text-left bg-white blur-lg px-6 w-1/3 shadow-lg">
+        <div class="flex justify-between items-center pb-3">
+            <p class="text-2xl font-bold text-gray-500">Are you sure you want to delete this flight ?</p>
+            <div id="card_close" class="modal-close cursor-pointer z-50">
+                <svg class="fill-current text-gray-500" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+                    <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+                </svg>
+            </div>
+        </div>
+        <div id="modalBody" class="my-5 mr-5 ml-5 flex justify-center">
+            <p>Body</p>
+        </div>
+        <a
+        id="deleteModal"
+        >
+        <div  class="flex justify-end pt-2 space-x-14">
+            <button>DELETE</button>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>    
+<script src="/script.js"></script>
+
+

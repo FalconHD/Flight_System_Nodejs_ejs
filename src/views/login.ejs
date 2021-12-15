@@ -1,0 +1,69 @@
+<%- include('./src/views/particial/header.ejs',{page:"Admin Auth"}) %>
+
+<div class="h-screen flex flex-col justify-start mt-32 items-center w-full">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="100"
+    height="100"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="feather feather-alert-triangle"
+    style="color: #790707"
+  >
+    <path
+      d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+    ></path>
+    <line x1="12" y1="9" x2="12" y2="13"></line>
+    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+  </svg>
+  <div class="mb-5 md:mb-10">
+    <p class="max-w-screen-md text-gray-100 md:text-lg text-center mx-auto">
+      ADMIN AUTHENTICATION
+    </p>
+  </div>
+  <form
+    method="post"
+    action="/login"
+    class="max-w-screen-md grid sm:grid-cols-2 gap-4 mx-auto w-full"
+  >
+    <div class="sm:col-span-2">
+      <label
+        for="email"
+        class="inline-block text-gray-800 text-sm sm:text-base mb-2"
+        >Email*</label
+      >
+      <input
+        type="email"
+        name="email"
+        class="w-full bg-gray-50 text-gray-800 border focus:ring ring-red-300 rounded outline-none transition duration-100 px-3 py-2"
+      />
+    </div>
+    <div class="sm:col-span-2">
+      <label
+        for="password"
+        class="inline-block text-gray-800 text-sm sm:text-base mb-2"
+        >Password*</label
+      >
+      <input
+        type="password"
+        name="password"
+        class="w-full bg-gray-50 text-gray-800 border focus:ring ring-indigo-300 rounded outline-none transition duration-100 px-3 py-2"
+      />
+    </div>
+
+    <div class="sm:col-span-2 flex justify-between items-center">
+      <button
+        style="background-color: #790707"
+        class="inline-block hover:bg-indigo-600 active:bg-indigo-700 focus-visible:ring ring-indigo-300 text-white text-sm md:text-base font-semibold text-center rounded-lg outline-none transition duration-100 px-8 py-3 w-full"
+      >
+        LOGIN
+      </button>
+    </div>
+  </form>
+</div>
+<!-- footer - start -->
+<%- include('./src/views/particial/footer.ejs') %>
