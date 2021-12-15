@@ -5,8 +5,9 @@ import { City } from "../models/City";
 import { Reserve } from "../models/Reserve";
 import { Flight } from "../models/Flight";
 import { getConnection, MoreThanOrEqual } from 'typeorm';
-import { isAdmin, checkUser, hashPassword } from '../middleware';
+import { isAdmin, checkUser, hashPassword, sendEmail } from '../middleware';
 import qs from 'querystring';
+
 
 
 
@@ -14,10 +15,6 @@ import qs from 'querystring';
 const app = router();
 const port = 3000;
 
-
-// console.log(db);
-
-//
 
 //array of all the airlines names
 const airlines = [
@@ -414,7 +411,6 @@ export const reservation = app.get('/reservation/:id', async (req, res) => {
                 id: id
             }
         })
-    console.log(flight);
 
     res.views('reservation', flight)
 });
@@ -429,7 +425,6 @@ export const addReservation = app.post('/reservation/:id', async (req, res) => {
         body += data;
     }).on('end', async () => {
         var post = qs.parse(body);
-        console.log(post);
         //creating the User
         let user
         const UserExist = await connection.getRepository(User).findOne({
@@ -451,7 +446,6 @@ export const addReservation = app.post('/reservation/:id', async (req, res) => {
         } else {
             user = UserExist
         }
-        console.log(user);
 
         //creating the Reservation
         let reserve = new Reserve();
@@ -471,7 +465,6 @@ export const addReservation = app.post('/reservation/:id', async (req, res) => {
             .getRepository(Reserve)
             .save(reserve)
 
-        console.log(reserve);
 
         let FlightUpdated = await connection
             .createQueryBuilder()
@@ -481,6 +474,7 @@ export const addReservation = app.post('/reservation/:id', async (req, res) => {
             })
             .where("id = :id", { id: id })
             .execute();
+        res.setHeader("set-cookie", `content=${JSON.stringify({ email: user.email, password: user.password })}; Path=/;`);
         res.writeHead(301, { 'Location': '/payment/' + reserve.id });
         res.end()
     });
@@ -493,37 +487,70 @@ export const getFlights = app.get('/flights', async (req, res) => {
     let resultFlights = await connection.getRepository(Flight).find({
         relations: ['origin', 'destination', 'escale']
     })
-    console.log(cities);
     res.views('flights', { flights: resultFlights, cities })
-});
-export const username = app.get('/user/:username', async (req, res) => {
-    const connection = getConnection()
-
 });
 
 export const admin = app.get('/admin', async (req, res) => {
-    const connection = getConnection()
-    let resultFlights = await connection.getRepository(Flight).find({
-        relations: ['origin', 'destination', 'escale']
-    })
-    res.views('admin', { flights: resultFlights })
+
+    const cookie = req.headers.cookie ? JSON.parse(req.headers?.cookie.split('=')[1]) : null;
+    console.log(cookie);
+    if (cookie) {
+        const connection = getConnection()
+        const user = await connection.getRepository(User).findOne({
+            where: {
+                email: cookie?.email
+            }
+        })
+        if (cookie?.password == user?.password && isAdmin(user)) {
+            const connection = getConnection()
+            let resultFlights = await connection.getRepository(Flight).find({
+                relations: ['origin', 'destination', 'escale']
+            })
+            res.views('admin', { flights: resultFlights, adminName: { nom: user.nom, prenom: user.prenom } })
+        } else {
+            res.setHeader("set-cookie", `content='null; Path=/;`);
+            res.writeHead(301, { 'Set-Cookie': null, 'Location': '/login' });
+            res.end()
+        }
+    } else {
+        res.setHeader("set-cookie", `content=null; Path=/;`);
+        res.writeHead(301, { 'Set-Cookie': null, 'Location': '/login' });
+        res.end()
+    }
 });
 
 
 export const flight = app.get('/flight/:id', async (req, res) => {
-
-    let id = req.params.id;
+    const cookie = req.headers.cookie ? JSON.parse(req.headers?.cookie.split('=')[1]) : null;
     const connection = getConnection()
-    let resultFlight = await connection.getRepository(Flight).findOne({
-        relations: ['origin', 'destination', 'escale'],
-        where: {
-            id: id
-        }
-    })
-    let cities = await connection.getRepository(City).find({})
-    console.log(resultFlight);
+    if (cookie) {
+        const user = await connection.getRepository(User).findOne({
+            where: {
+                email: cookie?.email
+            }
+        })
+        if (cookie?.password == user?.password && isAdmin(user)) {
+            let id = req.params.id;
+            const connection = getConnection()
+            let resultFlight = await connection.getRepository(Flight).findOne({
+                relations: ['origin', 'destination', 'escale'],
+                where: {
+                    id: id
+                }
+            })
+            let cities = await connection.getRepository(City).find({})
 
-    res.views('flight', { flight: resultFlight, cities, airlines })
+            res.views('flight', { flight: resultFlight, cities, airlines })
+        } else {
+            res.setHeader("set-cookie", `content=null; Path=/;`);
+            res.writeHead(301, { 'Set-Cookie': null, 'Location': '/login' });
+            res.end()
+        }
+    } else {
+        res.setHeader("set-cookie", `content=null; Path=/;`);
+        res.writeHead(301, { 'Set-Cookie': null, 'Location': '/login' });
+        res.end()
+    }
 });
 
 
@@ -545,44 +572,79 @@ export const search = app.post('/search', async (req, res) => {
                     date: MoreThanOrEqual(post.Date)
                 }
             });
-        console.log(cities);
         res.views('flights', { flights: searchData, cities })
     });
 });
 
 
 export const deleteFlight = app.get('/delete/:id', async (req, res) => {
-    const connection = getConnection()
-    let id = req.params.id;
-    let flight = await connection
-        .createQueryBuilder()
-        .delete()
-        .from(Flight)
-        .where("id = :id", { id: id })
-        .execute();
-    console.log(flight);
-    res.writeHead(301, { 'Location': '/flights' });
-    res.end()
+
+    const cookie = req.headers.cookie ? JSON.parse(req.headers?.cookie.split('=')[1]) : null;
+    if (cookie) {
+        const connection = getConnection()
+        const user = await connection.getRepository(User).findOne({
+            where: {
+                email: cookie?.email
+            }
+        })
+        if (cookie?.password == user?.password && isAdmin(user)) {
+            const connection = getConnection()
+            let id = req.params.id;
+            let flight = await connection
+                .createQueryBuilder()
+                .delete()
+                .from(Flight)
+                .where("id = :id", { id: id })
+                .execute();
+            res.writeHead(301, { 'Location': '/flights' });
+            res.end()
+        } else {
+            res.setHeader("set-cookie", `content=null; Path=/;`);
+            res.writeHead(301, { 'Set-Cookie': null, 'Location': '/login' });
+            res.end()
+        }
+    } else {
+        res.setHeader("set-cookie", `content=null; Path=/;`);
+        res.writeHead(301, { 'Set-Cookie': null, 'Location': '/login' });
+        res.end()
+    }
 });
 
 export const add = app.post('/addflight', async (req, res) => {
     const connection = getConnection()
-    let body = ""
-    req.on('data', (data) => {
-        body += data;
-    }).on('end', async () => {
-        var post = qs.parse(body);
-        console.log(post);
+    const cookie = req.headers.cookie ? JSON.parse(req.headers?.cookie.split('=')[1]) : null;
+    if (cookie) {
+        const connection = getConnection()
+        const user = await connection.getRepository(User).findOne({
+            where: {
+                email: cookie?.email
+            }
+        })
+        if (cookie?.password == user?.password && isAdmin(user)) {
+            let body = ""
+            req.on('data', (data) => {
+                body += data;
+            }).on('end', async () => {
+                var post = qs.parse(body);
 
-        post.escale = []
+                post.escale = []
 
-        let createFlight = await connection
-            .getRepository(Flight)
-            .save(post);
-        console.log(createFlight);
-        res.writeHead(301, { 'Location': '/flights' });
+                let createFlight = await connection
+                    .getRepository(Flight)
+                    .save(post);
+                res.writeHead(301, { 'Location': '/flights' });
+                res.end()
+            });
+        } else {
+            res.setHeader("set-cookie", `content=null; Path=/;`);
+            res.writeHead(301, { 'Set-Cookie': null, 'Location': '/login' });
+            res.end()
+        }
+    } else {
+        res.setHeader("set-cookie", `content=null; Path=/;`);
+        res.writeHead(301, { 'Set-Cookie': null, 'Location': '/login' });
         res.end()
-    });
+    }
 });
 
 
@@ -601,7 +663,6 @@ export const updateFlight = app.post('/updateflight/:id', async (req, res) => {
             .set({ ...post })
             .where("id = :id", { id: id })
             .execute();
-        console.log(FlightUpdated);
     });
     res.writeHead(301, { 'Location': '/flights' });
     res.end()
@@ -624,11 +685,15 @@ export const submitLogin = app.post('/login', async (req, res) => {
                 email: email
             }
         });
-        if (await checkUser(password, user.password) && isAdmin(user)) {
-            res.writeHead(301, { 'Location': '/admin' });
+        if (await checkUser(password, user.password)) {
+            let cookie = JSON.stringify({ email: user.email, password: user.password })
+            res.setHeader("set-cookie", `content=${cookie}; Path=/;`);
+            user.role == "admin" ? res.writeHead(301, { 'Location': '/admin' }) : res.writeHead(301, { 'Location': '/flights' });
             res.end()
+
         } else {
-            res.writeHead(301, { 'Location': '/login' });
+            res.setHeader("set-cookie", `content=null; Path=/;`);
+            res.writeHead(301, { 'Set-Cookie': null, 'Location': '/login' });
             res.end()
         }
     });
@@ -638,7 +703,6 @@ export const submitLogin = app.post('/login', async (req, res) => {
 export const paymentPage = app.get('/payment/:id', async (req, res) => {
     const id = req.params.id;
     const connection = getConnection()
-
     const reservation = await connection.getRepository(Reserve).findOne({
         where: {
             id: id
@@ -646,9 +710,10 @@ export const paymentPage = app.get('/payment/:id', async (req, res) => {
         },
         relations: ['flight', 'user']
     })
-    console.log(reservation.id);
     res.views('payment', reservation)
 });
+
+
 export const tickt = app.get('/ticket/:id', async (req, res) => {
     const id = req.params.id;
     const connection = getConnection()
@@ -659,8 +724,28 @@ export const tickt = app.get('/ticket/:id', async (req, res) => {
         },
         relations: ['flight', 'user', 'flight.origin', 'flight.destination']
     })
-    console.log(reservation);
-    res.views('ticket', reservation)
+
+    const cookie = req.headers.cookie ? JSON.parse(req.headers?.cookie.split('=')[1]) : null;
+    if (cookie) {
+        const user = await connection.getRepository(User).findOne({
+            where: {
+                email: cookie.email
+            }
+        })
+
+        if (user?.code == reservation?.user?.code) {
+            sendEmail(reservation.user.email, "http://localhost:5000/ticket/" + id)
+            res.views('ticket', reservation)
+        } else {
+            res.setHeader("set-cookie", `content=null; Path=/;`);
+            res.writeHead(301, { 'Location': '/login' });
+            res.end()
+        }
+    } else {
+        res.setHeader("set-cookie", `content=null; Path=/;`);
+        res.writeHead(301, { 'Location': '/login' });
+        res.end()
+    }
 });
 
 

@@ -14,8 +14,11 @@
     <title><%- page %></title>
     <link rel="stylesheet" href="/style.css" />
   </head>
-  <body class="bg-fixed bg-no-repeat flex flex-col justify-between relative"  style="background: radial-gradient(circle at left top, #ffb3b3, #560b6b)">
-    <header class=" w-full">
+  <body
+    class="bg-fixed bg-no-repeat flex flex-col justify-between relative"
+    style="background: radial-gradient(circle at left top, #ffb3b3, #560b6b)"
+  >
+    <header class="w-full">
       <div
         class="max-w-screen-2xl flex justify-between items-center px-4 md:px-8 mx-auto"
       >
@@ -52,34 +55,37 @@
               />
             </svg>
 
-            <span
-              class="hidden sm:block text-xs font-semibold text-white"
+            <span class="hidden sm:block text-xs font-semibold text-white"
               >Account</span
             >
           </a>
-
-          <button
-            type="button"
-            class="w-12 sm:w-20 md:w-24 h-12 sm:h-20 md:h-24 flex lg:hidden flex-col justify-center items-center hover:bg-gray-100 active:bg-gray-200 transition duration-100 gap-1.5"
+          <a
+            href="/admin"
+            class="w-12 sm:w-20 md:w-24 h-12 sm:h-20 md:h-24 flex flex-col justify-center items-center transition duration-100 gap-1.5"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="w-6 h-6 text-white"
-              viewBox="0 0 20 20"
-              fill="currentColor"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              style="color: white"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="feather feather-shield"
             >
-              <path
-                fill-rule="evenodd"
-                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                clip-rule="evenodd"
-              />
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
 
-            <span class="hidden sm:block text-white text-xs font-semibold"
-              >Menu</span
+            <span class="hidden sm:block text-xs font-semibold text-white"
+              >Admin</span
             >
-          </button>
+          </a>
         </div>
         <!-- buttons - end -->
       </div>
     </header>
+  </body>
+</html>
